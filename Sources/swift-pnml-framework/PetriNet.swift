@@ -1,10 +1,13 @@
 struct PetriNet {
   
+  typealias Marking = [Place: Int]
+  
   let name: String
   let places: Set<Place>
   let transitions: Set<Transition>
   let inputs: [Transition: [Place: Int]]
   let outputs: [Transition: [Place: Int]]
+  let initialMarking: Marking = [:]
   
 }
 

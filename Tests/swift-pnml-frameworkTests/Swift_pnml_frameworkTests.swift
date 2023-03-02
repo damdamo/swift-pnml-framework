@@ -13,7 +13,11 @@ final class swift_pnml_frameworkTests: XCTestCase {
     
     let p = PnmlParser()
     
-    p.loadPN(filePath: "petrinet1.xml")
+//    p.loadPN(filePath: "petrinet1.xml")
+//    p.loadPN(filePath: "NQueens-PT-05.xml")
+    p.loadPN(filePath: "NQueens-PT-08.pnml")
+//    p.loadPN(filePath: "/Users/damienmorard/Developer/Github/swift-pnml-framework/Sources/swift-pnml-framework/Resources/NQueens-PT-05.xml")
+
     
 //    if let url = URL(string: "https://www.pnml.org/version-2009/examples/philo.pnml") {
 //      p.loadPN(url: url)

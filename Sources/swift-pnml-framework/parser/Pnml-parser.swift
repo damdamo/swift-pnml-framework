@@ -13,7 +13,7 @@ class PnmlParser: NSObject, XMLParserDelegate {
   //  let dictionaryKeys = Set<String>(["place", "transition", "arc"])
 
 
-  func loadPN(filePath: String) {
+  func loadPN(filePath: String) {    
     if let url = Bundle.module.url(forResource: filePath, withExtension: nil) {
       let parser = XMLParser(contentsOf: url)!
       parser.delegate = self
@@ -98,5 +98,42 @@ class PnmlParser: NSObject, XMLParserDelegate {
     print("transitions: \(transitions)")
     print("arcs: \(arcs)")
   }
+  
+//  func createPN() -> PetriNet {
+//    
+//    var petriNetPlaces: Set<Place> = []
+//    var petriNetTransitions: Set<Transition> = []
+//    var marking: [Place: Int] = [:]
+//    var nameTemp: String = ""
+//    var placeTemp: Place
+//    
+//    for (id, infoPlace) in places {
+//      nameTemp = infoPlace["name"] ?? id
+//      placeTemp = Place(name: nameTemp)
+//      petriNetPlaces.insert(placeTemp)
+//      marking[placeTemp] =  Int(infoPlace["initialmarking"] ?? "0")
+//    }
+//    
+//    var inputs: [Transition: [Place: Int]] = [:]
+//    var outputs: [Transition: [Place: Int]] = [:]
+//    var idIn = ""
+//    var idOut = ""
+//    
+//    for (id, infoArc) in arcs {
+//      idIn = infoArc["source"]
+//      idOut = infoArc["target"]
+//      if let _ = places[idTemp] {
+//        
+//      } else {
+//        
+//      }
+//    }
+//    
+//    return PetriNet(name: net["name"],
+//                    places: places,
+//                    transitions: transitions,
+//                    inputs: inputs,
+//                    outputs: outputs)
+//  }
   
 }
