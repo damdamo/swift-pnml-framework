@@ -7,7 +7,8 @@ class PnmlParser: NSObject, XMLParserDelegate {
   var transitions: [String: [String: String]] = [:]
   var arcs: [String: [String: String]] = [:]
   var currentID = ""
-  var currentValue = ""
+  var currentType = ""
+  var currentTag = ""
   var currentDic = [String: String]()
   let regularTags = Set<String>(["name", "initialmarking", "inscription"])
   //  let dictionaryKeys = Set<String>(["place", "transition", "arc"])
@@ -33,31 +34,41 @@ class PnmlParser: NSObject, XMLParserDelegate {
       case "net":
       if let id = attributeDict["id"] {
         net["id"] = id
+        currentType = "net"
       }
       if let type = attributeDict["type"] {
         net["type"] = type
+        currentType = "net"
       }
       case "place":
       if let id = attributeDict["id"] {
-        currentID = id
         places[id] = [:]
+        currentID = id
+        currentType = "place"
       }
       case "transition":
       if let id = attributeDict["id"] {
-        currentID = id
         transitions[id] = [:]
+        currentID = id
+        currentType = "transition"
       }
       case "arc":
       if let id = attributeDict["id"] {
-        currentID = id
         arcs[id] = [:]
-        if let source = attributeDict["source"] {
+        if let source = attributeDict["source"], let target = attributeDict["target"] {
           arcs[id]!["source"] = source
+          arcs[id]!["target"] = target
+          arcs[id]!["inscription"] = "1"
         }
-        if let source = attributeDict["target"] {
-          arcs[id]!["target"] = source
-        }
+        currentID = id
+        currentType = "arc"
       }
+      case "name":
+        currentTag = "name"
+      case "initialmarking":
+        currentTag = "initialmarking"
+      case "inscription":
+        currentTag = "inscription"
       default:
         break
       }
@@ -66,37 +77,34 @@ class PnmlParser: NSObject, XMLParserDelegate {
   
   func parser(_ parser: XMLParser, foundCharacters string: String) {
     if !string.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-      currentValue = string
-    }
-  }
-
-  
-  func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
-    switch elementName.lowercased() {
-    case "place":
-      places[currentID] = currentDic
-      currentDic = [:]
-    case "transition":
-      transitions[currentID] = currentDic
-      currentDic = [:]
-    default:
-      if regularTags.contains(elementName) {
-        currentDic[elementName] = currentValue
+      switch currentType {
+      case "place":
+        if regularTags.contains(currentTag) {
+          places[currentID]![currentTag] = string
+          currentTag = ""
+        }
+      case "transition":
+        if regularTags.contains(currentTag) {
+          transitions[currentID]![currentTag] = string
+          currentTag = ""
+        }
+      case "arc":
+        if regularTags.contains(currentTag) {
+          arcs[currentID]![currentTag] = string
+          currentTag = ""
+        }
+      default:
+        break
       }
     }
-    
   }
 
   func parserDidEndDocument(_ parser: XMLParser) {
-//    if elementName == "net" {
-//      parsingCompleted()
-//    } else if dictionaryKeys.contains(elementName) {
-//
-//    }
-    print("net: \(net)")
-    print("place: \(places)")
-    print("transitions: \(transitions)")
-    print("arcs: \(arcs)")
+    print("Parsing complete")
+//    print("net: \(net)")
+//    print("place: \(places)")
+//    print("transitions: \(transitions)")
+//    print("arcs: \(arcs)")
   }
   
 //  func createPN() -> PetriNet {
